@@ -1,253 +1,324 @@
 <!DOCTYPE html>
 <html lang="cs">
 <head>
-<meta charset="UTF-8">
-<title>ITABet – Školní Casino</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ITABet – Školní Casino (Blackjack)</title>
+
 <style>
-/* --- RESET & BODY --- */
-* { box-sizing: border-box; }
 body {
-    margin:0; padding:0;
-    font-family: 'Arial', sans-serif;
     background: #0a2038;
     color: #fff;
+    font-family: Arial, sans-serif;
     text-align: center;
+    margin: 0;
 }
 
-/* --- HEADER & LOGO --- */
+/* HLAVIČKA */
 header {
     background: #08182c;
     padding: 20px;
     border-bottom: 3px solid #0d345c;
-    position: relative;
-}
-#logo {
-    width: 180px;
-    margin-bottom: 10px;
 }
 .team {
     font-size: 14px;
-    opacity: 0.8;
+    opacity: 0.7;
 }
 
-/* --- CREDIT & VIP --- */
-#creditBox {
+/* Kredit & VIP */
+#creditsBox {
+    margin: 20px 0;
     font-size: 22px;
-    margin: 10px 0;
 }
 #vipBox {
     font-size: 18px;
     margin-bottom: 20px;
 }
 
-/* --- MONEY INPUT --- */
-.money-box input { padding:8px; border-radius:5px; width:100px; margin-right:5px; }
-.money-box button { padding:8px 12px; border:none; border-radius:5px; cursor:pointer; background:#f5a623; color:#000; font-weight:bold; transition:0.3s; }
-.money-box button:hover { background:#ffb63d; }
+/* PENÍZE */
+.money-controls {
+    margin: 10px 0;
+}
+.money-controls input[type=number] {
+    padding: 8px;
+    border-radius: 5px;
+    border: none;
+    width: 100px;
+    font-size: 16px;
+    margin-right: 10px;
+    text-align: center;
+}
+.money-controls button {
+    background: #f5a623;
+    border: none;
+    color: #003300;
+    font-weight: bold;
+    padding: 10px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+    margin: 5px 5px 5px 0;
+    transition: background 0.3s ease;
+}
+.money-controls button:hover {
+    background: #d99c00;
+}
 
-/* --- NAV --- */
-.nav button { padding:10px 20px; margin:5px; border:none; border-radius:6px; font-weight:bold; background:#f5a623; cursor:pointer; transition:0.3s; }
-.nav button:hover { background:#ffb63d; }
+/* BLACKJACK - design stolu */
+.blackjack-table {
+    position: relative;
+    width: 100%;
+    max-width: 900px;
+    height: 480px;
+    margin: 0 auto 40px;
+    background: #005500;
+    border-radius: 20px;
+    box-shadow: 0 0 40px #001a00 inset;
+    user-select: none;
+}
 
-/* --- PAGE --- */
-.page { display:none; padding:20px; }
-.active { display:block; }
+.card-slot {
+    border: 2px solid #ffcc00;
+    border-radius: 8px;
+    width: 100px;
+    height: 140px;
+    background: #003300;
+    box-shadow: inset 0 0 10px #99cc00;
+    display: inline-block;
+    margin: 10px 8px;
+    line-height: 140px;
+    font-size: 40px;
+    color: #fff;
+    font-weight: bold;
+    text-shadow: 1px 1px 2px black;
+}
 
-/* --- AUTOMATY --- */
-.slots-container { display:flex; flex-wrap:wrap; justify-content:center; gap:20px; }
-.slot-box { width:200px; background: rgba(255,255,255,0.1); border-radius:10px; padding:15px; position:relative; overflow:hidden; }
-.slot { font-size:40px; margin:10px 0; transition:0.3s; display:inline-block; width:60px; }
+#dealer-area, #player-area {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    justify-content: center;
+}
+#dealer-area { top: 50px; }
+#player-area { bottom: 50px; }
 
-/* --- SLOT BUTTON --- */
-button.play { background:#4caf50; padding:10px 15px; border:none; border-radius:6px; cursor:pointer; color:#fff; font-weight:bold; transition:0.3s; }
-button.play:hover { background:#5ed262; }
+.table-text {
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    font-weight: bold;
+    font-family: 'Arial Black', Arial, sans-serif;
+}
+.pays-3to2 { top: 200px; font-size: 24px; color: #ff0000; text-transform: uppercase; }
+.dealer-rules { top: 230px; font-size: 18px; color: #ffd700; }
+.insurance-pays { top: 260px; font-size: 22px; color: #ff0000; }
 
-/* --- BLACKJACK --- */
-.cards { font-size:35px; margin:5px; display:flex; justify-content:center; gap:10px; }
-.blackjack-controls button { margin:5px; padding:10px 15px; border:none; border-radius:6px; cursor:pointer; background:#f5a623; font-weight:bold; transition:0.3s; }
-.blackjack-controls button:hover { background:#ffb63d; }
+.controls {
+    margin: 20px auto 40px;
+}
+.controls button {
+    background: #ffcc00;
+    border: none;
+    color: #003300;
+    font-weight: bold;
+    font-size: 18px;
+    padding: 12px 25px;
+    margin: 10px;
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    transition: background 0.3s ease;
+}
+.controls button:hover:not(:disabled) {
+    background: #ffd633;
+}
+.controls button:disabled {
+    background: #aaa;
+    cursor: default;
+}
 
-/* --- FOOTER --- */
-footer { margin-top:40px; background:#08182c; padding:25px; border-top:3px solid #0d345c; }
-.author-box { background: rgba(255,255,255,0.1); padding:15px 25px; border-radius:10px; display:inline-block; text-align:left; }
+#result {
+    font-size: 24px;
+    font-weight: bold;
+    margin-top: 15px;
+    min-height: 30px;
+}
 
-/* --- ANIMACE --- */
-@keyframes winFlash { 0%{background:rgba(255,255,0,0.3);} 50%{background:rgba(255,255,0,0);} 100%{background:rgba(255,255,0,0.3);} }
-.winEffect { animation: winFlash 0.5s ease-in-out 3; }
+/* FOOTER */
+footer {
+    margin-top: 40px;
+    background: #08182c;
+    padding: 25px;
+    border-top: 3px solid #0d345c;
+}
+.author-box {
+    background: rgba(255,255,255,0.1);
+    padding: 15px 25px;
+    border-radius: 10px;
+    display: inline-block;
+}
 </style>
 </head>
 <body>
 
 <header>
-    <img id="logo" src="https://i.imgur.com/jIhqlxG.png" alt="ITABet Logo">
-    <h1>🎰 ITABet – Školní Casino 🎰</h1>
-    <div class="team">
-        Vedoucí: <b>David Kejnovský</b> | Grafik: <b>Daniel</b> | Designer: <b>Filip Jaheka</b> | Programátor: <b>Ty</b>
-    </div>
+  <h1>🎰 ITABet – Blackjack Casino 🎰</h1>
+  <div class="team">
+    Vedoucí: <b>David Kejnovský</b> | Grafik: <b>Daniel</b> | Designer: <b>Filip Jaheka</b> | Programátor: <b>Ty</b>
+  </div>
 </header>
 
-<div id="creditBox">Kredit: <span id="credits">200</span> 💰</div>
+<div id="creditsBox">Kredit: <span id="credits">200</span> 💰</div>
 <div id="vipBox">VIP: Bronz 🟤</div>
 
-<div class="money-box">
-    <input type="number" id="moneyInput" placeholder="Částka">
-    <button onclick="addMoney()">Vložit</button>
-    <button onclick="withdrawMoney()">Vybrat</button>
+<div class="money-controls">
+  <input id="moneyInput" type="number" placeholder="Částka" min="1" />
+  <button onclick="addMoney()">Vložit</button>
+  <button onclick="withdrawMoney()">Vybrat</button>
 </div>
 
-<div class="nav">
-    <button onclick="showPage('automaty')">Automaty</button>
-    <button onclick="showPage('blackjack')">Blackjack</button>
+<div class="blackjack-table">
+  <div class="table-text pays-3to2">BLACKJACK PAYS 3 TO 2</div>
+  <div class="table-text dealer-rules">Dealer must stand on 17 and must draw to 16</div>
+  <div class="table-text insurance-pays">INSURANCE PAYS 2 TO 1</div>
+
+  <div id="dealer-area">
+    <div class="card-slot" id="dealerCard1">?</div>
+    <div class="card-slot" id="dealerCard2">?</div>
+    <div class="card-slot" id="dealerCard3" style="display:none;"></div>
+    <div class="card-slot" id="dealerCard4" style="display:none;"></div>
+    <div class="card-slot" id="dealerCard5" style="display:none;"></div>
+  </div>
+
+  <div id="player-area">
+    <div class="card-slot" id="playerCard1">?</div>
+    <div class="card-slot" id="playerCard2">?</div>
+    <div class="card-slot" id="playerCard3" style="display:none;"></div>
+    <div class="card-slot" id="playerCard4" style="display:none;"></div>
+    <div class="card-slot" id="playerCard5" style="display:none;"></div>
+  </div>
 </div>
 
-<!-- AUTOMATY -->
-<div id="automaty" class="page active">
-    <h2>🎲 Automaty – Profesionální sloty</h2>
-    <div class="slots-container"></div>
+<div class="controls">
+  <button onclick="startGame()">Nová hra (-20 kreditů)</button>
+  <button onclick="hit()" id="btnHit" disabled>Hit</button>
+  <button onclick="stand()" id="btnStand" disabled>Stand</button>
 </div>
 
-<!-- BLACKJACK -->
-<div id="blackjack" class="page">
-    <h2>♠️ Blackjack</h2>
-    <p><b>Tvoje karty:</b></p>
-    <div id="playerCards" class="cards"></div>
-    Součet: <span id="playerTotal">0</span>
-    <p><b>Dealer:</b></p>
-    <div id="dealerCards" class="cards"></div>
-    Součet: <span id="dealerTotal">0</span>
-    <div class="blackjack-controls">
-        <button onclick="startBlackjack()">Nová hra (-20)</button>
-        <button onclick="hit()">Hit</button>
-        <button onclick="stand()">Stand</button>
-    </div>
-    <p id="bjResult"></p>
-</div>
+<div id="result"></div>
 
 <footer>
-    <div class="author-box">
-        <h3>🎓 Autoři projektu ITABet</h3>
-        <p>🧑‍💼 Vedoucí: <b>David Kejnovský</b></p>
-        <p>🎨 Grafik: <b>Daniel</b></p>
-        <p>🧩 Designer: <b>Filip Jaheka</b></p>
-        <p>💻 Programátor: <b>Ty</b></p>
-        <p style="opacity:0.6;">Školní projekt – 2025</p>
-    </div>
+  <div class="author-box">
+    🎓 Autoři — Vedoucí: <b>David Kejnovský</b>, Grafik: <b>Daniel</b>, Designer: <b>Filip Jaheka</b>, Programátor: <b>Ty</b><br>Školní projekt – 2025
+  </div>
 </footer>
-
-<!-- ZVUKY -->
-<audio id="spinSound" src="https://www.myinstants.com/media/sounds/slot-machine.mp3"></audio>
-<audio id="winSound" src="https://www.myinstants.com/media/sounds/winning.mp3"></audio>
 
 <script>
 let credits = 200;
-
-/* --- VIP SYSTÉM --- */
+function updateCredits(x=0){
+  credits += x;
+  if(credits < 0) credits = 0;
+  document.getElementById('credits').textContent = credits;
+  updateVIP();
+}
 function updateVIP(){
-    let vip = document.getElementById("vipBox");
-    if(credits>=2000) vip.innerHTML="VIP: Diamond 💎";
-    else if(credits>=1000) vip.innerHTML="VIP: Gold 🟡";
-    else if(credits>=500) vip.innerHTML="VIP: Silver ⚪";
-    else vip.innerHTML="VIP: Bronz 🟤";
+  const vip = document.getElementById('vipBox');
+  if(credits >= 2000) vip.textContent = 'VIP: Diamond 💎';
+  else if(credits >= 1000) vip.textContent = 'VIP: Gold 🟡';
+  else if(credits >= 500) vip.textContent = 'VIP: Silver ⚪';
+  else vip.textContent = 'VIP: Bronz 🟤';
 }
-
-/* --- PENÍZE --- */
-function updateCredits(x){
-    credits+=x;
-    if(credits<0) credits=0;
-    document.getElementById("credits").innerText=credits;
-    updateVIP();
-}
-
 function addMoney(){
-    let amt=Number(document.getElementById("moneyInput").value);
-    if(amt>0){ updateCredits(amt); alert("Vloženo: "+amt); }
+  const a = Number(document.getElementById('moneyInput').value);
+  if(a>0) updateCredits(a);
 }
-
 function withdrawMoney(){
-    let amt=Number(document.getElementById("moneyInput").value);
-    if(amt>credits) return alert("Nedostatek kreditů!");
-    updateCredits(-amt); alert("Vybráno: "+amt);
+  const a = Number(document.getElementById('moneyInput').value);
+  if(a <= credits && a>0) updateCredits(-a);
+  else alert('Nedostatek kreditů!');
 }
 
-/* --- NAV --- */
-function showPage(id){
-    document.querySelectorAll(".page").forEach(e=>e.classList.remove("active"));
-    document.getElementById(id).classList.add("active");
+/* BLACKJACK */
+let deck, playerHand, dealerHand;
+let gameActive = false;
+
+function createDeck(){
+  const suits = ['♠','♥','♦','♣'];
+  const values = ['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
+  const d = [];
+  for(let s of suits) for(let v of values) d.push({value:v,suit:s});
+  return d;
+}
+function shuffle(d){
+  for(let i=d.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [d[i],d[j]] = [d[j],d[i]];
+  }
+  return d;
+}
+function drawCard(){ return deck.pop(); }
+function cardValue(c){ if(c.value==='A') return 11; if(['J','Q','K'].includes(c.value)) return 10; return parseInt(c.value); }
+function cardToText(c){ return c.value + c.suit; }
+function calculateTotal(hand){
+  let t=0, ac=0;
+  for(const c of hand){ t += cardValue(c); if(c.value==='A') ac++; }
+  while(t>21 && ac>0){ t -= 10; ac--; }
+  return t;
+}
+function updateDisplay(){
+  const dSlots = ['dealerCard1','dealerCard2','dealerCard3','dealerCard4','dealerCard5'];
+  const pSlots = ['playerCard1','playerCard2','playerCard3','playerCard4','playerCard5'];
+  dSlots.forEach((id,i)=>{
+    const el = document.getElementById(id);
+    if(i < dealerHand.length){ el.style.display='inline-block'; el.textContent = cardToText(dealerHand[i]); }
+    else el.style.display='none';
+  });
+  pSlots.forEach((id,i)=>{
+    const el = document.getElementById(id);
+    if(i < playerHand.length){ el.style.display='inline-block'; el.textContent = cardToText(playerHand[i]); }
+    else el.style.display='none';
+  });
 }
 
-/* --- AUTOMATY --- */
-const symbols=["🍒","🔔","🍋","⭐","7️⃣"];
-const container=document.querySelector(".slots-container");
-const spinSound=document.getElementById("spinSound");
-const winSound=document.getElementById("winSound");
-
-for(let i=1;i<=5;i++){  // 5 automatů demo
-    let box=document.createElement("div");
-    box.className="slot-box";
-    box.innerHTML=`
-        <h3>Automat #${i}</h3>
-        <div id="a${i}1" class="slot">❓</div>
-        <div id="a${i}2" class="slot">❓</div>
-        <div id="a${i}3" class="slot">❓</div>
-        <button onclick="spin(${i})" class="play">SPUSTIT (-10)</button>
-        <p id="res${i}"></p>
-    `;
-    container.appendChild(box);
+function startGame(){
+  if(credits < 20){ alert('Potřebuješ alespoň 20 kreditů!'); return; }
+  updateCredits(-20);
+  gameActive = true;
+  deck = shuffle(createDeck());
+  playerHand = [drawCard(), drawCard()];
+  dealerHand = [drawCard(), drawCard()];
+  updateDisplay();
+  document.getElementById('result').textContent = '';
+  document.getElementById('btnHit').disabled = false;
+  document.getElementById('btnStand').disabled = false;
 }
 
-function spin(n){
-    if(credits<10) return alert("Nemáš kredit!");
-    updateCredits(-10);
-    spinSound.play();
-
-    let r1=document.getElementById(`a${n}1`);
-    let r2=document.getElementById(`a${n}2`);
-    let r3=document.getElementById(`a${n}3`);
-    let result=document.getElementById(`res${n}`);
-    let reels=[r1,r2,r3], timers=[], final=[];
-
-    reels.forEach((reel,i)=>{
-        timers[i]=setInterval(()=>{ reel.innerText=symbols[Math.floor(Math.random()*symbols.length)]; }, 100);
-    });
-
-    setTimeout(()=>stop(0),1000);
-    setTimeout(()=>stop(1),1500);
-    setTimeout(()=>stop(2),2000);
-
-    function stop(i){
-        clearInterval(timers[i]);
-        final[i]=symbols[Math.floor(Math.random()*symbols.length)];
-        reels[i].innerText=final[i];
-        if(i===2) checkWin();
-    }
-
-    function checkWin(){
-        let [a,b,c]=final;
-        if(a===b && b===c){
-            winSound.play();
-            updateCredits(50);
-            result.innerText="🎉 Výhra +50!";
-            result.classList.add("winEffect");
-            setTimeout(()=>result.classList.remove("winEffect"),1500);
-        } else result.innerText="❌ Prohra";
-    }
+function hit(){
+  if(!gameActive) return;
+  playerHand.push(drawCard());
+  updateDisplay();
+  if(calculateTotal(playerHand) > 21) endGame('💥 Prohrál jsi! Přesáhl jsi 21.');
 }
 
-/* --- BLACKJACK --- */
-let deck, player, dealer;
+function stand(){
+  if(!gameActive) return;
+  while(calculateTotal(dealerHand) < 17){
+    dealerHand.push(drawCard());
+    updateDisplay();
+  }
+  const p = calculateTotal(playerHand), d = calculateTotal(dealerHand);
+  if(p > 21) endGame('💥 Prohrál jsi! Přesáhl jsi 21.');
+  else if(d > 21 || p > d){ updateCredits(40); endGame('🎉 Výhra +40 kreditů!'); }
+  else if(p === d) endGame('🤝 Remíza!');
+  else endGame('❌ Prohra!');
+}
 
-function newDeck(){let c=["A","2","3","4","5","6","7","8","9","10","J","Q","K"]; return [...c,...c,...c,...c]; }
-function draw(){ return deck.splice(Math.floor(Math.random()*deck.length),1)[0]; }
-function cardValue(c){ if(c=="A") return 11; if(["J","Q","K"].includes(c)) return 10; return Number(c); }
-function total(hand){ let t=hand.reduce((s,c)=>s+cardValue(c),0); while(t>21 && hand.includes("A")){ t-=10; hand[hand.indexOf("A")]="a"; } return t; }
-function render(){ document.getElementById("playerCards").innerText=player.join(" "); document.getElementById("dealerCards").innerText=dealer.join(" "); document.getElementById("playerTotal").innerText=total([...player]); document.getElementById("dealerTotal").innerText=total([...dealer]); }
-
-function startBlackjack(){ if(credits<20){ alert("Potřebuješ 20 kreditů!"); return; } updateCredits(-20); deck=newDeck(); player=[draw(),draw()]; dealer=[draw(),draw()]; document.getElementById("bjResult").innerText=""; render(); }
-function hit(){ player.push(draw()); render(); if(total([...player])>21) document.getElementById("bjResult").innerText="💥 Přes 21! Prohrál jsi!"; }
-function stand(){ while(total([...dealer])<17) dealer.push(draw()); render(); let p=total([...player]), d=total([...dealer]); if(p>21) lose(); else if(d>21 || p> d) win(); else if(p===d) drawGame(); else lose(); }
-function win(){ updateCredits(40); document.getElementById("bjResult").innerText="🎉 Výhra +40!"; }
-function lose(){ document.getElementById("bjResult").innerText="❌ Prohra!"; }
-function drawGame(){ document.getElementById("bjResult").innerText="🤝 Remíza!"; }
+function endGame(msg){
+  document.getElementById('result').textContent = msg;
+  document.getElementById('btnHit').disabled = true;
+  document.getElementById('btnStand').disabled = true;
+  gameActive = false;
+}
 </script>
 
 </body>
